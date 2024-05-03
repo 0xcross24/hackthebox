@@ -57,9 +57,7 @@ Cracked the hash via hashcat -m 3200 <rock you word list>
 
 $ hashcat -m 3200 hash /usr/share/wordlists/rockyou.txt
 hashcat (v6.2.6) starting
-                                                                                                                                                                                                                                            
-OpenCL API (OpenCL 3.0 PoCL 5.0+debian  Linux, None+Asserts, RELOC, SPIR, LLVM 16.0.6, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]                                                                                          
-==================================================================================================================================================                                                                                          
+                                                                                                                                                                                                            OpenCL API (OpenCL 3.0 PoCL 5.0+debian  Linux, None+Asserts, RELOC, SPIR, LLVM 16.0.6, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]                                                                                                                                                                                 
 * Device #1: cpu-haswell-Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz, 6820/13704 MB (2048 MB allocatable), 8MCU                                                                                                                                
                                                                                                                                                                                                                                             
 Minimum password length supported by kernel: 0                                                                                                                                                                                              
