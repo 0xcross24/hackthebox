@@ -1,7 +1,7 @@
 ## Enumeration
 
-After poking around the website, it leads to a login page from data.analytical.htb
-The login page, checking the page source, it shows that the metabase version v0.46.6
+After poking around the website, it leads to a login page from data.analytical.htb/login
+The page source of the login page shows the metabase version v0.46.6
 
 After googling there's an exploit CVE-2023-38646
 https://www.assetnote.io/resources/research/chaining-our-way-to-pre-auth-rce-in-metabase-cve-2023-38646 for more information
